@@ -1,0 +1,29 @@
+{
+  "name": "cordova-plugin-flc-tcpsocket",
+  "version": "1.0.0",
+  "description": "Cordova FullLegitCode TCP Socket Plugin",
+  "cordova": {
+    "id": "cordova-plugin-flc-tcpsocket",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KosmoGalaxy/cordova-plugin-flc-tcpsocket.git"
+  },
+  "keywords": [
+    "cordova",
+    "fulllegitcode",
+    "flc",
+    "tcp",
+    "socket",
+    "server",
+    "client",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "Tomasz Rozwadowski",
+  "license": "Apache 2.0",
+  "homepage": "https://github.com/KosmoGalaxy/cordova-plugin-flc-tcpsocket"
+}

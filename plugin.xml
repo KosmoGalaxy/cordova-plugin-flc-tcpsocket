@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-flc-tcpsocket" version="1.0.0">
+    <name>cordova-plugin-flc-tcpsocket</name>
+    <description>Cordova FullLegitCode TCP Socket Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,fulllegitcode,flc,tcp,socket,server,client</keywords>
+
+    <js-module src="www/flc-tcpsocket.js" name="FlcTcpSocket">
+        <clobbers target="cordova.plugins.FlcTcpSocket" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET"/>
+        </config-file>
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="FlcTcpSocket" >
+                <param name="android-package" value="pl.fulllegitcode.tcpsocket.FlcTcpSocketPlugin"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/android/pl/fulllegitcode/tcpsocket/FlcTcpClient.java" target-dir="src/pl/fulllegitcode/tcpsocket" />
+        <source-file src="src/android/pl/fulllegitcode/tcpsocket/FlcTcpServer.java" target-dir="src/pl/fulllegitcode/tcpsocket" />
+        <source-file src="src/android/pl/fulllegitcode/tcpsocket/FlcTcpSocket.java" target-dir="src/pl/fulllegitcode/tcpsocket" />
+        <source-file src="src/android/pl/fulllegitcode/tcpsocket/FlcTcpSocketPlugin.java" target-dir="src/pl/fulllegitcode/tcpsocket" />
+    </platform>
+</plugin>
