@@ -40,11 +40,11 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onClose() {
-          Log.d("FlcTcpSocketTest", "server closed");
+//          Log.d("FlcTcpSocketTest", "server closed");
         }
         @Override
         public void onError(String message) {
-          Log.e("FlcTcpSocketTest", String.format(Locale.ENGLISH, "server error. message=%s", message));
+//          Log.e("FlcTcpSocketTest", String.format(Locale.ENGLISH, "server error. message=%s", message));
         }
       });
     } catch (Exception e) {}
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     client.addLifeCycleCallback(new FlcTcpClient.LifeCycleCallback() {
       @Override
       public void onClose() {
-        Log.d("FlcTcpSocketTest", String.format(Locale.ENGLISH, "client closed. id=%d address=%s", client.id(), client.address()));
+//        Log.d("FlcTcpSocketTest", String.format(Locale.ENGLISH, "client closed. id=%d address=%s", client.id(), client.address()));
       }
     });
   }
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
       client.receive(new FlcTcpClient.ReceiveCallback() {
         @Override
         public void onData(byte[] data) {
-          Log.d("FlcTcpSocketTest", String.format(Locale.ENGLISH, "client received. id=%d text=%s", client.id(), new String(data, Charset.forName("UTF-8"))));
+          //Log.d("FlcTcpSocketTest", String.format(Locale.ENGLISH, "client received. id=%d text=%s", client.id(), new String(data, Charset.forName("UTF-8"))));
         }
       });
     } catch (Exception e) {}
