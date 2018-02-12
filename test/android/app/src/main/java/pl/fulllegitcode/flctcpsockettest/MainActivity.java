@@ -1,10 +1,13 @@
 package pl.fulllegitcode.flctcpsockettest;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageView;
 
-import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -61,13 +64,41 @@ public class MainActivity extends AppCompatActivity {
 
   private void _testClientReceive(final FlcTcpClient client) {
     try {
+      final Stream stream = new Stream();
+      final boolean[] wasMetaReceived = new boolean[1];
       client.receive(new FlcTcpClient.ReceiveCallback() {
         @Override
-        public void onData(byte[] data) {
-          //Log.d("FlcTcpSocketTest", String.format(Locale.ENGLISH, "client received. id=%d text=%s", client.id(), new String(data, Charset.forName("UTF-8"))));
+        public void onData(byte[] bytes) {
+          stream.writeBytes(bytes);
+          byte[] data = stream.readData();
+          if (data != null) {
+            if (!wasMetaReceived[0]) {
+              _testDecodeMeta(data);
+              wasMetaReceived[0] = true;
+            } else {
+              _testDecodeImage(data);
+            }
+          }
         }
       });
     } catch (Exception e) {}
+  }
+
+  private void _testDecodeMeta(byte[] data) {
+    Log.d("FlcTcpSocketTest", String.format(Locale.ENGLISH, "meta. text=%s", new String(data, Charset.forName("UTF-8"))));
+  }
+
+  private void _testDecodeImage(byte[] data) {
+    Log.d("FlcTcpSocketTest", String.format(Locale.ENGLISH, "image. size=%d", data.length));
+    ByteBuffer buffer = ByteBuffer.wrap(data);
+    final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        ImageView image = findViewById(R.id.imageView2);
+        image.setImageBitmap(bitmap);
+      }
+    });
   }
 
 }
