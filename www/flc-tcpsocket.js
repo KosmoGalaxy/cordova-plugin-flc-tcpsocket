@@ -22,7 +22,7 @@ FlcTcpSocket.openServer = function (port, successCallback, errorCallback) {
           successCallback(server);
         }
       } else if (payload.event === 'client') {
-        const client = new FlcTcpClient(payload.id);
+        const client = new FlcTcpClient(payload.id, payload.address);
         server._addClient(client);
         if (server.onClient) {
           server.onClient(client);
@@ -108,8 +108,9 @@ FlcTcpServer.prototype._closeClient = function(id) {
   }
 };
 
-function FlcTcpClient(id) {
+function FlcTcpClient(id, address) {
   this.id = id;
+  this.address = address;
   this.isClosed = false;
   this.onClose = null;
   this._onClose = null;
