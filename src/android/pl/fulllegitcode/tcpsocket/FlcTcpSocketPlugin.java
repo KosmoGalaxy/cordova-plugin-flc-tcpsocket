@@ -86,6 +86,7 @@ public class FlcTcpSocketPlugin extends CordovaPlugin {
                 JSONObject payload = new JSONObject();
                 payload.put("event", "client");
                 payload.put("id", client.id());
+                payload.put("address", client.address().toString().replaceAll("/", ""));
                 PluginResult result = new PluginResult(PluginResult.Status.OK, payload);
                 result.setKeepCallback(true);
                 callbackContext.sendPluginResult(result);
