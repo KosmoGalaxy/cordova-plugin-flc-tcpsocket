@@ -17,7 +17,7 @@ FlcTcpSocket.openServer = function (port, successCallback, errorCallback) {
   exec(
     function (payload) {
       if (payload.event === 'open') {
-        server = new FlcTcpServer(payload.id);
+        server = new FlcTcpServer(payload.id, port);
         if (successCallback) {
           successCallback(server);
         }
@@ -48,8 +48,9 @@ FlcTcpSocket.openServer = function (port, successCallback, errorCallback) {
   );
 };
 
-function FlcTcpServer(id) {
+function FlcTcpServer(id, port) {
   this.id = id;
+  this.port = port;
   this.clients = [];
   this.isClosed = false;
   this.onClient = null;
