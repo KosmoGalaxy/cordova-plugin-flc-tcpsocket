@@ -84,6 +84,10 @@ FlcTcpServer.prototype.getClient = function(id) {
 FlcTcpServer.prototype._close = function() {
   if (!this.isClosed) {
     this.isClosed = true;
+    const this_ = this;
+    this.clients.splice().forEach(function(client) {
+      this_._closeClient(client);
+    });
     if (this.onClose) {
       this.onClose();
     }
@@ -101,8 +105,8 @@ FlcTcpServer.prototype._addClient = function(client) {
   };
 };
 
-FlcTcpServer.prototype._closeClient = function(id) {
-  const client = this.getClient(id);
+FlcTcpServer.prototype._closeClient = function(idOrClient) {
+  const client = idOrClient instanceof FlcTcpClient ? idOrClient : this.getClient(idOrClient);
   if (client) {
     client._close();
   }
