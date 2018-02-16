@@ -7,6 +7,7 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -181,16 +182,12 @@ public class FlcTcpSocketPlugin extends CordovaPlugin {
             client.receive(new FlcTcpClient.ReceiveCallback() {
               @Override
               public void onData(byte[] data) {
-                try {
-                  JSONObject payload = new JSONObject();
-                  payload.put("data", data);
-                  payload.put("orderNo", orderNo[0]++);
-                  PluginResult result = new PluginResult(PluginResult.Status.OK, payload);
-                  result.setKeepCallback(true);
-                  callbackContext.sendPluginResult(result);
-                } catch (JSONException e) {
-                  FlcTcpSocket.logError(String.format(Locale.ENGLISH, "client receive json error. message=%s", e.getMessage()));
-                }
+                ByteBuffer buffer = ByteBuffer.allocate(4 + data.length);
+                buffer.putInt(orderNo[0]++);
+                buffer.put(data);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, buffer.array());
+                result.setKeepCallback(true);
+                callbackContext.sendPluginResult(result);
               }
             });
           } catch (Exception e) {
