@@ -1,10 +1,6 @@
 package pl.fulllegitcode.flctcpsockettest;
 
-import android.util.Log;
-
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class Stream {
 
@@ -32,14 +28,12 @@ public class Stream {
       int numBytesCopied = _copy(bytes, offset, chunk.size, chunk.sizePosition);
       chunk.sizePosition += numBytesCopied;
       offset += numBytesCopied;
-//      int size = chunk.size[0] << 24 | (chunk.size[1] & 0xff) << 16 | (chunk.size[2] & 0xff) << 8 | (chunk.size[3] & 0xff);
-//      Log.d("FlcTcpSocketTest", String.format(Locale.ENGLISH, "-- numBytesCopied=%d bytes=%d %d %d %d size=%d", numBytesCopied, chunk.size[0], chunk.size[1], chunk.size[2], chunk.size[3], size));
     }
-    if (chunk.sizePosition == chunk.size.length && chunk.data == null) {
-      int size = chunk.size[0] << 24 | (chunk.size[1] & 0xff) << 16 | (chunk.size[2] & 0xff) << 8 | (chunk.size[3] & 0xff);
-      chunk.data = new byte[size];
-    }
-    if (chunk.dataPosition < chunk.data.length) {
+    if (chunk.sizePosition == chunk.size.length) {
+      if (chunk.data == null) {
+        int size = chunk.size[0] << 24 | (chunk.size[1] & 0xff) << 16 | (chunk.size[2] & 0xff) << 8 | (chunk.size[3] & 0xff);
+        chunk.data = new byte[size];
+      }
       int numBytesCopied = _copy(bytes, offset, chunk.data, chunk.dataPosition);
       chunk.dataPosition += numBytesCopied;
       offset += numBytesCopied;

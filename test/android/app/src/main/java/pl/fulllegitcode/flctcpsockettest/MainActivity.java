@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void _test() {
-    FlcTcpSocket.debug = true;
+//    FlcTcpSocket.debug = true;
     _testServer();
   }
 
@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
   private void _testDecodeImage(byte[] data) {
     Log.d("FlcTcpSocketTest", String.format(Locale.ENGLISH, "image. size=%d", data.length));
-    ByteBuffer buffer = ByteBuffer.wrap(data);
     final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
     runOnUiThread(new Runnable() {
       @Override
