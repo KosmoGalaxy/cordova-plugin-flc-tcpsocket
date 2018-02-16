@@ -174,7 +174,7 @@ public class FlcTcpSocketPlugin extends CordovaPlugin {
     cordova.getThreadPool().execute(new Runnable() {
       @Override
       public void run() {
-        final int[] counter = {0};
+        final int[] orderNo = {0};
         FlcTcpClient client = getClient(id);
         if (client != null) {
           try {
@@ -182,15 +182,14 @@ public class FlcTcpSocketPlugin extends CordovaPlugin {
               @Override
               public void onData(byte[] data) {
                 try {
-                  counter[0]++;
                   JSONObject payload = new JSONObject();
-                  payload.put("counter", counter[0]);
                   payload.put("data", data);
+                  payload.put("orderNo", orderNo[0]++);
                   PluginResult result = new PluginResult(PluginResult.Status.OK, payload);
                   result.setKeepCallback(true);
                   callbackContext.sendPluginResult(result);
                 } catch (JSONException e) {
-                  FlcTcpSocket.logError(String.format(Locale.ENGLISH, "client receive json error. message=%s counter=%d", e.getMessage(), counter[0]));
+                  FlcTcpSocket.logError(String.format(Locale.ENGLISH, "client receive json error. message=%s", e.getMessage()));
                 }
               }
             });

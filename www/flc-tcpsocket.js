@@ -130,8 +130,7 @@ FlcTcpClient.prototype.receive = function(dataCallback, errorCallback) {
   exec(
     function(payload) {
       if (dataCallback) {
-        console.log(payload.counter);
-        dataCallback(payload.data);
+        dataCallback(payload.data, payload.orderNo);
       }
     },
     function(message) {
