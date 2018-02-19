@@ -127,7 +127,7 @@ FlcTcpClient.prototype.receive = function(dataCallback, errorCallback) {
     }
     return;
   }
-  let lastOrderNo = 0;
+  let lastOrderNo = -1;
   let isError = false;
   exec(
     function(payload) {
