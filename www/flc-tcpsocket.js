@@ -127,24 +127,22 @@ FlcTcpClient.prototype.receive = function(dataCallback, errorCallback) {
     }
     return;
   }
+  const waitingPayloads = new Map();
   let lastOrderNo = -1;
-  let isError = false;
   exec(
     function(payload) {
       if (dataCallback) {
-        const orderNo = new DataView(payload).getInt32(0);
-        if (orderNo !== lastOrderNo + 1) {
-          isError = true;
-        }
-        if (isError) {
-          console.log('--', lastOrderNo, orderNo);
+        payload = {
+          data: payload.slice(4),
+          orderNo: new DataView(payload).getInt32(0)
+        };
+        if (payload.orderNo === lastOrderNo + 1) {
+          dataCallback(payload);
+          lastOrderNo = payload.orderNo;
+          checkWaitingPayload();
           return;
         }
-        lastOrderNo = orderNo;
-        dataCallback({
-          data: payload.slice(4),
-          orderNo: orderNo
-        });
+        waitingPayloads.set(payload.orderNo, payload);
       }
     },
     function(message) {
@@ -156,6 +154,16 @@ FlcTcpClient.prototype.receive = function(dataCallback, errorCallback) {
     'clientReceive',
     [this.id]
   );
+  function checkWaitingPayload() {
+    const payload = waitingPayloads.get(lastOrderNo + 1);
+    if (payload) {
+      console.log('---', payload.orderNo);
+      dataCallback(payload);
+      lastOrderNo = payload.orderNo;
+      waitingPayloads.delete(payload.orderNo);
+      checkWaitingPayload();
+    }
+  }
 };
 
 FlcTcpClient.prototype.close = function() {
