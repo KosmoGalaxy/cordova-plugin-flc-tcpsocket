@@ -157,7 +157,6 @@ FlcTcpClient.prototype.receive = function(dataCallback, errorCallback) {
   function checkWaitingPayload() {
     const payload = waitingPayloads.get(lastOrderNo + 1);
     if (payload) {
-      console.log('---', payload.orderNo);
       dataCallback(payload);
       lastOrderNo = payload.orderNo;
       waitingPayloads.delete(payload.orderNo);
