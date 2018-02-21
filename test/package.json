@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepare": "node prepare.js"
+    "prepare": "node prepare.js",
+    "prepare-unity": "node prepare-unity.js"
   },
   "author": "",
   "license": "ISC",

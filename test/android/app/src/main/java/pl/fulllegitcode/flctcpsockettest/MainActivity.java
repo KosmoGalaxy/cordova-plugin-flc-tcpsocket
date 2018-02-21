@@ -7,14 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 
 import pl.fulllegitcode.tcpsocket.FlcTcpClient;
 import pl.fulllegitcode.tcpsocket.FlcTcpServer;
-import pl.fulllegitcode.tcpsocket.FlcTcpSocket;
 
 public class MainActivity extends AppCompatActivity {
 
