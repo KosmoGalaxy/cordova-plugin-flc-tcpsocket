@@ -12,7 +12,7 @@ public class Main : MonoBehaviour
     void Start()
     {
         _OpenClient();
-        //_LogTime();
+        _LogTime();
     }
 
     void OnDestroy()
@@ -64,7 +64,7 @@ public class Main : MonoBehaviour
         while (_keepRunning)
         {
             Debug.Log("- " + (Time.time * 1000).ToString("0") + " isOpen=" + _client.isOpen + " isClosed=" + _client.isClosed);
-            await Task.Delay(100);
+            await Task.Delay(1000);
         }
     }
 }

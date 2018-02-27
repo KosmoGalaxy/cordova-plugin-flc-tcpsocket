@@ -61,10 +61,6 @@ public class FlcTcpClient {
 
   public FlcTcpClient() {}
 
-  public FlcTcpClient(ExecutorService threadPool) {
-    _threadPool = threadPool;
-  }
-
   public FlcTcpClient(ExecutorService threadPool, SocketChannel channel) {
     _threadPool = threadPool;
     _channel = channel;
@@ -110,6 +106,9 @@ public class FlcTcpClient {
     InetSocketAddress address = new InetSocketAddress(ip, port);
     try {
       _channel = SocketChannel.open(address);
+      _channel.socket().setSoLinger(true, 0);
+      _channel.socket().setSoTimeout(5000);
+      _channel.socket().setTcpNoDelay(true);
       _address = _channel.socket().getInetAddress();
       _isOpen = true;
       FlcTcpSocket.logDebug(String.format(Locale.ENGLISH, "client open. id=%d address=%s", id(), address()));

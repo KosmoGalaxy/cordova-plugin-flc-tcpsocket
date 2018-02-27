@@ -14,6 +14,12 @@ namespace FullLegitCode.TcpSocket
         }
 
 
+        protected string _ip;
+        public string ip { get { return _ip; } }
+
+        protected int _port;
+        public int port { get { return _port; } }
+
         protected bool _isOpen = false;
         public bool isOpen { get { return _isOpen; } }
 
