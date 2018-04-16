@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="cordova-plugin-flc-tcpsocket" version="1.0.0">
+        id="cordova-plugin-flc-tcpsocket" version="1.1.0">
     <name>cordova-plugin-flc-tcpsocket</name>
     <description>Cordova FullLegitCode TCP Socket Plugin</description>
     <license>Apache 2.0</license>
@@ -26,5 +26,22 @@
         <source-file src="src/android/pl/fulllegitcode/tcpsocket/FlcTcpServer.java" target-dir="src/pl/fulllegitcode/tcpsocket" />
         <source-file src="src/android/pl/fulllegitcode/tcpsocket/FlcTcpSocket.java" target-dir="src/pl/fulllegitcode/tcpsocket" />
         <source-file src="src/android/pl/fulllegitcode/tcpsocket/FlcTcpSocketPlugin.java" target-dir="src/pl/fulllegitcode/tcpsocket" />
+    </platform>
+    
+    <platform name="ios">
+      <config-file target="config.xml" parent="/*">
+        <feature name="FlcUdpSocket">
+          <param name="ios-package" value="FlcTcpSocketPlugin" />
+        </feature>
+      </config-file>
+      
+      <header-file src="src/ios/pl/fulllegitcode/tcpsocket/UtilObjectiveC.h" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/UtilObjectiveC.m" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/ytcpsocket.c" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocket.swift" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/TCPClient.swift" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/Socket.swift" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/Result.swift" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocketPlugin.swift" />
     </platform>
 </plugin>

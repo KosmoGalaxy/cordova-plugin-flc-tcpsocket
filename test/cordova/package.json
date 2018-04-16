@@ -11,10 +11,17 @@
     "license": "Apache-2.0",
     "cordova": {
         "plugins": {
-            "cordova-plugin-flc-tcpsocket": {}
-        }
+            "cordova-plugin-flc-tcpsocket": {},
+            "cordova-plugin-whitelist": {}
+        },
+        "platforms": [
+            "ios"
+        ]
     },
     "dependencies": {
-        "cordova-android": "^7.0.0"
+        "cordova-android": "^7.0.0",
+        "cordova-ios": "^4.5.4",
+        "cordova-plugin-flc-tcpsocket": "git+https://github.com/KosmoGalaxy/cordova-plugin-flc-tcpsocket.git",
+        "cordova-plugin-whitelist": "^1.3.3"
     }
 }

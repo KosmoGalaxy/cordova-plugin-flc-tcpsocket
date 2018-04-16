@@ -23,5 +23,6 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <plugin name="cordova-plugin-flc-tcpsocket" spec="~1.0.0" />
+    <plugin name="cordova-plugin-flc-tcpsocket" spec="https://github.com/KosmoGalaxy/cordova-plugin-flc-tcpsocket" />
+    <engine name="ios" spec="^4.5.4" />
 </widget>
