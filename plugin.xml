@@ -35,13 +35,13 @@
         </feature>
       </config-file>
       
-      <header-file src="src/ios/pl/fulllegitcode/tcpsocket/UtilObjectiveC.h" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/UtilObjectiveC.m" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/ytcpsocket.c" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocketManager.swift" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/TCPClient.swift" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/Socket.swift" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/Result.swift" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocketPlugin.swift" />
+      <header-file src="src/ios/pl/fulllegitcode/tcpsocket/UtilObjectiveC.h" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/UtilObjectiveC.m" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/ytcpsocket.c" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocketManager.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/TCPClient.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/Socket.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/Result.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocketPlugin.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
     </platform>
 </plugin>
