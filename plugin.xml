@@ -40,8 +40,8 @@
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/ytcpsocket.c" target-dir="src/pl/fulllegitcode/tcpsocket" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocketManager.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/TCPClient.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/Socket.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/Result.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/TCPSocket.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/TCPResult.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocketPlugin.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
     </platform>
 </plugin>
