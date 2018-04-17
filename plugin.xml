@@ -30,7 +30,7 @@
     
     <platform name="ios">
       <config-file target="config.xml" parent="/*">
-        <feature name="FlcUdpSocket">
+        <feature name="FlcTcpSocket">
           <param name="ios-package" value="FlcTcpSocketPlugin" />
         </feature>
       </config-file>
