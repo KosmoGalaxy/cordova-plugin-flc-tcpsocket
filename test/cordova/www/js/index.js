@@ -55,9 +55,9 @@ function test() {
       server.onClient = client => {
         console.log(server, client);
         client.receive(
-          data => {
+          payload => {
             const decoder = new TextDecoder('utf-8');
-            console.log(decoder.decode(new Uint8Array(data)));
+            console.log(decoder.decode(new Uint8Array(payload.data)));
           },
           message => {
             console.error(message);

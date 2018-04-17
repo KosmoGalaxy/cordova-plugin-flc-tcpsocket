@@ -72,11 +72,15 @@ import Foundation
     self.commandDelegate!.run(inBackground: {
       let pluginResult: CDVPluginResult
       do {
+        var orderNo: Int32 = 0;
         try self.manager.clientReceive(id: clientId) { bytes in
-          let pluginResultReceive = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: Data(bytes: bytes))
+          var payload: Data = Data()
+          payload.append(contentsOf: self.toByteArray(orderNo).reversed())
+          payload.append(Data(bytes: bytes))
+          let pluginResultReceive = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: payload)
           pluginResultReceive!.setKeepCallbackAs(true)
           self.commandDelegate.send(pluginResultReceive, callbackId: command.callbackId)
-          
+          orderNo += 1
         }
       } catch FlcTcpSocketManagerError.clientNotFound {
         pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: "client not found")
@@ -102,6 +106,11 @@ import Foundation
       }
       self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
     })
+  }
+  
+  func toByteArray<T>(_ value: T) -> [UInt8] {
+    var value = value
+    return withUnsafeBytes(of: &value) { Array($0) }
   }
   
 }

@@ -34,18 +34,24 @@ public typealias Byte = UInt8
 
 open class Socket {
   
-    public let address: String
-    internal(set) public var port: Int32
-    internal(set) public var fd: Int32?
+  public let address: String
+  internal(set) public var port: Int32
+  internal(set) public var fd: Int32?
   
-    public init(address: String, port: Int32) {
-        self.address = address
-        self.port = port
-    }
+  internal static var nextId: Int32 = 1
+  internal let id: Int32
   
-    public func getId() -> Int32 {
-        return fd!;
-    }
+  
+  public init(address: String, port: Int32) {
+    self.address = address
+    self.port = port
+    id = Socket.nextId
+    Socket.nextId += 1
+  }
+  
+  public func getId() -> Int32 {
+    return id
+  }
   
 }
 
