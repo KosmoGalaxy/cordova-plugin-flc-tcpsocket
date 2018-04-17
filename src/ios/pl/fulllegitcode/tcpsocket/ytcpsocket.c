@@ -133,7 +133,7 @@ int ytcpsocket_pull(int socketfd, char *data, int len, int timeout_sec) {
 
 int flc_tcpsocket_recv(int socketfd, char *data, int len, int timeout_sec) {
     int readlen = 0;
-    readlen = recv(socketfd, data, len, 0);
+    readlen = (int)recv(socketfd, data, len, 0);
     return readlen;
 }
 

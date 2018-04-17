@@ -152,48 +152,73 @@ open class TCPClient: Socket {
 }
 
 open class TCPServer: Socket {
-
-    open func listen() -> Result {
-        let fd = c_ytcpsocket_listen(self.address, port: Int32(self.port))
-        if fd > 0 {
-            self.fd = fd
-            
-            // If port 0 is used, get the actual port number which the server is listening to
-            if (self.port == 0) {
-                let p = c_ytcpsocket_port(fd)
-                if (p == -1) {
-                    return .failure(SocketError.unknownError)
-                } else {
-                    self.port = p
-                }
-            }
-            
-            return .success
-        } else {
-            return .failure(SocketError.unknownError)
-        }
-    }
-    
-    open func accept(timeout :Int32 = 0) -> TCPClient? {
-        guard let serferfd = self.fd else { return nil }
-        
-        var buff: [Int8] = [Int8](repeating: 0x0,count: 16)
-        var port: Int32 = 0
-        let clientfd: Int32 = c_ytcpsocket_accept(serferfd, ip: &buff, port: &port, timeout: timeout)
-        
-        guard clientfd >= 0 else { return nil }
-        guard let address = String(cString: buff, encoding: String.Encoding.utf8) else { return nil }
-        
-        let client = TCPClient(address: address, port: port)
-        client.fd = clientfd
-            
-        return client
-    }
-    
-    open func close() {
-        guard let fd: Int32=self.fd else { return }
+  
+  var clients: [Int32: TCPClient]
+  
+  override public init(address: String, port: Int32) {
+    clients = [Int32: TCPClient]()
+    super.init(address: address, port: port)
+  }
+  
+  open func listen() -> Result {
+    let fd = c_ytcpsocket_listen(self.address, port: Int32(self.port))
+    if fd > 0 {
+      self.fd = fd
       
-        _ = c_ytcpsocket_close(fd)
-        self.fd = nil
+      // If port 0 is used, get the actual port number which the server is listening to
+      if (self.port == 0) {
+        let p = c_ytcpsocket_port(fd)
+        if (p == -1) {
+          return .failure(SocketError.unknownError)
+        } else {
+          self.port = p
+        }
+      }
+      
+      return .success
+    } else {
+      return .failure(SocketError.unknownError)
     }
+  }
+  
+  open func accept(timeout: Int32 = 0) -> TCPClient? {
+    guard let serferfd = self.fd else { return nil }
+    
+    var buff: [Int8] = [Int8](repeating: 0x0,count: 16)
+    var port: Int32 = 0
+    let clientfd: Int32 = c_ytcpsocket_accept(serferfd, ip: &buff, port: &port, timeout: timeout)
+    
+    guard clientfd >= 0 else { return nil }
+    guard let address = String(cString: buff, encoding: String.Encoding.utf8) else { return nil }
+    
+    let client = TCPClient(address: address, port: port)
+    client.fd = clientfd
+    
+    clients[clientfd] = client
+    
+    return client
+  }
+  
+  open func close() {
+    guard let fd: Int32 = self.fd else { return }
+    
+    for client in clients.values {
+      client.close()
+    }
+    
+    clients = [:]
+    
+    _ = c_ytcpsocket_close(fd)
+    self.fd = nil
+  }
+  
+  func closeClient(_ id: Int32) {
+    for (clientId, client) in clients {
+      if clientId == id {
+        client.close()
+      }
+    }
+    clients[id] = nil
+  }
+  
 }

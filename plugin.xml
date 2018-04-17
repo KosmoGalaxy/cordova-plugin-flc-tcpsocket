@@ -38,7 +38,7 @@
       <header-file src="src/ios/pl/fulllegitcode/tcpsocket/UtilObjectiveC.h" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/UtilObjectiveC.m" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/ytcpsocket.c" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocket.swift" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocketManager.swift" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/TCPClient.swift" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/Socket.swift" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/Result.swift" />

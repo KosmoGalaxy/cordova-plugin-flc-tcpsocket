@@ -43,6 +43,10 @@ open class Socket {
         self.port = port
     }
   
+    public func getId() -> Int32 {
+        return fd!;
+    }
+  
 }
 
 public enum SocketError: Error {

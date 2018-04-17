@@ -11,8 +11,8 @@
     "license": "Apache-2.0",
     "cordova": {
         "plugins": {
-            "cordova-plugin-flc-tcpsocket": {},
-            "cordova-plugin-whitelist": {}
+            "cordova-plugin-whitelist": {},
+            "cordova-plugin-flc-tcpsocket": {}
         },
         "platforms": [
             "ios"
