@@ -1,12 +1,12 @@
-#ifndef UtilObjectiveC_h
-#define UtilObjectiveC_h
+#ifndef FlcTcpUtilObjectiveC_h
+#define FlcTcpUtilObjectiveC_h
 
 #import <Foundation/Foundation.h>
 
-@interface UtilObjectiveC : NSObject
+@interface FlcTcpUtilObjectiveC : NSObject
 
 + (NSDictionary<NSString*, NSString*> *)getIPAddresses;
 
 @end
 
-#endif /* UtilObjectiveC_h */
+#endif /* FlcTcpUtilObjectiveC_h */
