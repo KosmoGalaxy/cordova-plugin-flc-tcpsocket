@@ -45,8 +45,6 @@ class FlcTcpSocketManager {
         while server.isOpen() {
           if let client = server.accept() {
             onClient(client)
-          } else {
-            onError("TCP Socket Server accept client error")
           }
         }
       case .failure(let error):
