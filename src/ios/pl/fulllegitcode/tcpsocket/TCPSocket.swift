@@ -51,6 +51,10 @@ open class TCPSocket {
     return id
   }
   
+  public func isOpen() -> Bool {
+    return fd != nil
+  }
+  
 }
 
 public enum TCPSocketError: Error {

@@ -48,22 +48,38 @@ app.initialize();
 
 
 function test() {
-  cordova.plugins['FlcTcpSocket'].openServer(
-    3070,
-    server => {
-      console.log(server);
-      server.onClient = client => {
-        console.log(server, client);
-        client.receive(
-          payload => {
-            const decoder = new TextDecoder('utf-8');
-            console.log(decoder.decode(new Uint8Array(payload.data)));
-          },
-          message => {
-            console.error(message);
-          }
-        );
-      };
+  var openServerButton = document.getElementById('button-open-server');
+  openServerButton.onclick = () => {
+    cordova.plugins['FlcTcpSocket'].openServer(
+      3070,
+      server => {
+        console.log(server);
+        onServer(server);
+      },
+      message => {
+        console.error(message);
+      }
+    );
+  };
+}
+
+function onServer(server) {
+  var closeButton = document.getElementById('button-close-server');
+  closeButton.onclick = () => {
+    server.close();
+  };
+  
+  server.onClient = client => {
+    console.log(server, client);
+    onClient(client);
+  };
+}
+
+function onClient(client) {
+  client.receive(
+    payload => {
+      const decoder = new TextDecoder('utf-8');
+      console.log(decoder.decode(new Uint8Array(payload.data)));
     },
     message => {
       console.error(message);

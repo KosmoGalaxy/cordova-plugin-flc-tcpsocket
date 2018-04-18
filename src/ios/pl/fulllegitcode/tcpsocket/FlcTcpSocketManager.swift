@@ -42,7 +42,7 @@ class FlcTcpSocketManager {
     DispatchQueue.global().async {
       switch server.listen() {
       case .success:
-        while true {
+        while server.isOpen() {
           if let client = server.accept() {
             onClient(client)
           } else {
@@ -62,7 +62,7 @@ class FlcTcpSocketManager {
     }
     
     DispatchQueue.global().async {
-      while true {
+      while client.isOpen() {
         if let bytes: [UInt8] = client.recv(TCP_BUFFER_SIZE) {
           onReceive(bytes)
         }
