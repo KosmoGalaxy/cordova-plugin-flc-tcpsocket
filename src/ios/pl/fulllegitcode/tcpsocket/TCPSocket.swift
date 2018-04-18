@@ -30,8 +30,6 @@
 
 import Foundation
 
-public typealias Byte = UInt8
-
 open class TCPSocket {
   
   public let address: String
@@ -45,8 +43,8 @@ open class TCPSocket {
   public init(address: String, port: Int32) {
     self.address = address
     self.port = port
-    id = Socket.nextId
-    Socket.nextId += 1
+    id = TCPSocket.nextId
+    TCPSocket.nextId += 1
   }
   
   public func getId() -> Int32 {
@@ -55,7 +53,7 @@ open class TCPSocket {
   
 }
 
-public enum SocketError: Error {
+public enum TCPSocketError: Error {
     case queryFailed
     case connectionClosed
     case connectionTimeout

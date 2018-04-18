@@ -13,7 +13,7 @@ public enum FlcTcpSocketManagerError: Error {
   case clientNotFound
 }
 
-let BUFFER_SIZE = 1024
+let TCP_BUFFER_SIZE = 1024
 
 class FlcTcpSocketManager {
   
@@ -24,7 +24,7 @@ class FlcTcpSocketManager {
   }
   
   func getMyIp() -> String? {
-    let ips: [AnyHashable: String] = UtilObjectiveC.getIPAddresses()
+    let ips: [AnyHashable: String] = FlcTcpUtilObjectiveC.getIPAddresses()
     var myIp: String
     if String(ips["hotspot"]!) != "" {
       myIp = String(ips["hotspot"]!)
@@ -56,14 +56,14 @@ class FlcTcpSocketManager {
     return server
   }
   
-  func clientReceive(id: Int32, onReceive: @escaping (_ bytes: [Byte]) -> ()) throws {
+  func clientReceive(id: Int32, onReceive: @escaping (_ bytes: [UInt8]) -> ()) throws {
     guard let client: TCPClient = getClientById(id) else {
       throw FlcTcpSocketManagerError.clientNotFound
     }
     
     DispatchQueue.global().async {
       while true {
-        if let bytes: [Byte] = client.recv(BUFFER_SIZE) {
+        if let bytes: [UInt8] = client.recv(TCP_BUFFER_SIZE) {
           onReceive(bytes)
         }
       }

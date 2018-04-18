@@ -30,11 +30,11 @@
 
 import Foundation
 
-@_silgen_name("ytcpsocket_connect") private func c_ytcpsocket_connect(_ host:UnsafePointer<Byte>,port:Int32,timeout:Int32) -> Int32
+@_silgen_name("ytcpsocket_connect") private func c_ytcpsocket_connect(_ host:UnsafePointer<UInt8>,port:Int32,timeout:Int32) -> Int32
 @_silgen_name("ytcpsocket_close") private func c_ytcpsocket_close(_ fd:Int32) -> Int32
-@_silgen_name("ytcpsocket_send") private func c_ytcpsocket_send(_ fd:Int32,buff:UnsafePointer<Byte>,len:Int32) -> Int32
-@_silgen_name("ytcpsocket_pull") private func c_ytcpsocket_pull(_ fd:Int32,buff:UnsafePointer<Byte>,len:Int32,timeout:Int32) -> Int32
-@_silgen_name("flc_tcpsocket_recv") private func c_flc_tcpsocket_recv(_ fd:Int32,buff:UnsafePointer<Byte>,len:Int32) -> Int32
+@_silgen_name("ytcpsocket_send") private func c_ytcpsocket_send(_ fd:Int32,buff:UnsafePointer<UInt8>,len:Int32) -> Int32
+@_silgen_name("ytcpsocket_pull") private func c_ytcpsocket_pull(_ fd:Int32,buff:UnsafePointer<UInt8>,len:Int32,timeout:Int32) -> Int32
+@_silgen_name("flc_tcpsocket_recv") private func c_flc_tcpsocket_recv(_ fd:Int32,buff:UnsafePointer<UInt8>,len:Int32) -> Int32
 @_silgen_name("ytcpsocket_listen") private func c_ytcpsocket_listen(_ address:UnsafePointer<Int8>,port:Int32)->Int32
 @_silgen_name("ytcpsocket_accept") private func c_ytcpsocket_accept(_ onsocketfd:Int32,ip:UnsafePointer<Int8>,port:UnsafePointer<Int32>,timeout:Int32) -> Int32
 @_silgen_name("ytcpsocket_port") private func c_ytcpsocket_port(_ fd:Int32) -> Int32
@@ -53,13 +53,13 @@ open class TCPClient: TCPSocket {
     } else {
       switch rs {
       case -1:
-        return .failure(SocketError.queryFailed)
+        return .failure(TCPSocketError.queryFailed)
       case -2:
-        return .failure(SocketError.connectionClosed)
+        return .failure(TCPSocketError.connectionClosed)
       case -3:
-        return .failure(SocketError.connectionTimeout)
+        return .failure(TCPSocketError.connectionTimeout)
       default:
-        return .failure(SocketError.unknownError)
+        return .failure(TCPSocketError.unknownError)
       }
     }
   }
@@ -79,14 +79,14 @@ open class TCPClient: TCPSocket {
    * send data
    * return success or fail with message
    */
-  open func send(data: [Byte]) -> TCPResult {
-    guard let fd = self.fd else { return .failure(SocketError.connectionClosed) }
+  open func send(data: [UInt8]) -> TCPResult {
+    guard let fd = self.fd else { return .failure(TCPSocketError.connectionClosed) }
     
     let sendsize: Int32 = c_ytcpsocket_send(fd, buff: data, len: Int32(data.count))
     if Int(sendsize) == data.count {
       return .success
     } else {
-      return .failure(SocketError.unknownError)
+      return .failure(TCPSocketError.unknownError)
     }
   }
   
@@ -95,13 +95,13 @@ open class TCPClient: TCPSocket {
    * return success or fail with message
    */
   open func send(string: String) -> TCPResult {
-    guard let fd = self.fd else { return .failure(SocketError.connectionClosed) }
+    guard let fd = self.fd else { return .failure(TCPSocketError.connectionClosed) }
     
     let sendsize = c_ytcpsocket_send(fd, buff: string, len: Int32(strlen(string)))
     if sendsize == Int32(strlen(string)) {
       return .success
     } else {
-      return .failure(SocketError.unknownError)
+      return .failure(TCPSocketError.unknownError)
     }
   }
   
@@ -110,15 +110,15 @@ open class TCPClient: TCPSocket {
    * send nsdata
    */
   open func send(data: Data) -> TCPResult {
-    guard let fd = self.fd else { return .failure(SocketError.connectionClosed) }
+    guard let fd = self.fd else { return .failure(TCPSocketError.connectionClosed) }
     
-    var buff = [Byte](repeating: 0x0,count: data.count)
+    var buff = [UInt8](repeating: 0x0,count: data.count)
     (data as NSData).getBytes(&buff, length: data.count)
     let sendsize = c_ytcpsocket_send(fd, buff: buff, len: Int32(data.count))
     if sendsize == Int32(data.count) {
       return .success
     } else {
-      return .failure(SocketError.unknownError)
+      return .failure(TCPSocketError.unknownError)
     }
   }
   
@@ -126,26 +126,26 @@ open class TCPClient: TCPSocket {
    * read data with expect length
    * return success or fail with message
    */
-  open func read(_ expectlen:Int, timeout:Int = -1) -> [Byte]? {
+  open func read(_ expectlen:Int, timeout:Int = -1) -> [UInt8]? {
     guard let fd:Int32 = self.fd else { return nil }
     
-    var buff = [Byte](repeating: 0x0, count: expectlen)
+    var buff = [UInt8](repeating: 0x0, count: expectlen)
     let readLen = c_ytcpsocket_pull(fd, buff: &buff, len: Int32(expectlen), timeout: Int32(timeout))
     if readLen <= 0 { return nil }
     let rs = buff[0...Int(readLen-1)]
-    let data: [Byte] = Array(rs)
+    let data: [UInt8] = Array(rs)
     
     return data
   }
   
-  open func recv(_ expectlen:Int, timeout:Int = -1) -> [Byte]? {
+  open func recv(_ expectlen:Int, timeout:Int = -1) -> [UInt8]? {
     guard let fd:Int32 = self.fd else { return nil }
     
-    var buff = [Byte](repeating: 0x0, count: expectlen)
+    var buff = [UInt8](repeating: 0x0, count: expectlen)
     let readLen = c_flc_tcpsocket_recv(fd, buff: &buff, len: Int32(expectlen))
     if readLen <= 0 { return nil }
     let rs = buff[0...Int(readLen-1)]
-    let data: [Byte] = Array(rs)
+    let data: [UInt8] = Array(rs)
     
     return data
   }
@@ -169,7 +169,7 @@ open class TCPServer: TCPSocket {
       if (self.port == 0) {
         let p = c_ytcpsocket_port(fd)
         if (p == -1) {
-          return .failure(SocketError.unknownError)
+          return .failure(TCPSocketError.unknownError)
         } else {
           self.port = p
         }
@@ -177,11 +177,11 @@ open class TCPServer: TCPSocket {
       
       return .success
     } else {
-      return .failure(SocketError.unknownError)
+      return .failure(TCPSocketError.unknownError)
     }
   }
   
-  open func accept(timeout: Int32 = 0) -> TCPResult? {
+  open func accept(timeout: Int32 = 0) -> TCPClient? {
     guard let serferfd = self.fd else { return nil }
     
     var buff: [Int8] = [Int8](repeating: 0x0,count: 16)

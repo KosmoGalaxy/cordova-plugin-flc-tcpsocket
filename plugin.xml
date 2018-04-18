@@ -35,8 +35,8 @@
         </feature>
       </config-file>
       
-      <header-file src="src/ios/pl/fulllegitcode/tcpsocket/UtilObjectiveC.h" target-dir="src/pl/fulllegitcode/tcpsocket" />
-      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/UtilObjectiveC.m" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <header-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpUtilObjectiveC.h" target-dir="src/pl/fulllegitcode/tcpsocket" />
+      <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpUtilObjectiveC.m" target-dir="src/pl/fulllegitcode/tcpsocket" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/ytcpsocket.c" target-dir="src/pl/fulllegitcode/tcpsocket" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocketManager.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/TCPClient.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
