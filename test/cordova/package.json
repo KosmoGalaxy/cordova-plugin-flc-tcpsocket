@@ -15,13 +15,14 @@
             "cordova-plugin-flc-tcpsocket": {}
         },
         "platforms": [
-            "ios"
+            "ios",
+            "windows"
         ]
     },
     "dependencies": {
         "cordova-android": "^7.0.0",
         "cordova-ios": "^4.5.4",
-        "cordova-plugin-flc-tcpsocket": "git+https://github.com/KosmoGalaxy/cordova-plugin-flc-tcpsocket.git",
-        "cordova-plugin-whitelist": "^1.3.3"
+        "cordova-plugin-whitelist": "^1.3.3",
+        "cordova-windows": "^6.0.0"
     }
 }

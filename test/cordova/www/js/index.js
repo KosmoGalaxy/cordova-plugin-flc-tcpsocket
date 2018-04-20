@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
+let app = {
   // Application Constructor
   initialize: function() {
     document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
@@ -28,14 +28,14 @@ var app = {
   // 'pause', 'resume', etc.
   onDeviceReady: function() {
     this.receivedEvent('deviceready');
-    test();
+    setTimeout(test, 5000);
   },
 
   // Update DOM on a Received Event
   receivedEvent: function(id) {
-    var parentElement = document.getElementById(id);
-    var listeningElement = parentElement.querySelector('.listening');
-    var receivedElement = parentElement.querySelector('.received');
+    let parentElement = document.getElementById(id);
+    let listeningElement = parentElement.querySelector('.listening');
+    let receivedElement = parentElement.querySelector('.received');
 
     listeningElement.setAttribute('style', 'display:none;');
     receivedElement.setAttribute('style', 'display:block;');
@@ -48,7 +48,7 @@ app.initialize();
 
 
 function test() {
-  var openServerButton = document.getElementById('button-open-server');
+  /*let openServerButton = document.getElementById('button-open-server');
   openServerButton.onclick = () => {
     cordova.plugins['FlcTcpSocket'].openServer(
       3070,
@@ -60,11 +60,19 @@ function test() {
         console.error(message);
       }
     );
-  };
+  };*/
+  cordova.plugins['FlcTcpSocket'].openServer(
+    3070,
+    server => {
+      console.log('server open', server);
+      server.onClient = client => console.log('client open', client);
+    },
+    e => console.error(e)
+  );
 }
 
 function onServer(server) {
-  var closeButton = document.getElementById('button-close-server');
+  let closeButton = document.getElementById('button-close-server');
   closeButton.onclick = () => {
     server.close();
   };

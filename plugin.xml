@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="cordova-plugin-flc-tcpsocket" version="1.1.1">
+        id="cordova-plugin-flc-tcpsocket" version="1.2.0">
     <name>cordova-plugin-flc-tcpsocket</name>
     <description>Cordova FullLegitCode TCP Socket Plugin</description>
     <license>Apache 2.0</license>
@@ -43,5 +43,17 @@
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/TCPSocket.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/TCPResult.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
       <source-file src="src/ios/pl/fulllegitcode/tcpsocket/FlcTcpSocketPlugin.swift" target-dir="src/pl/fulllegitcode/tcpsocket" />
+    </platform>
+
+    <platform name="windows">
+        <js-module src="src/windows/flc-tcpsocket-proxy.js" name="FlcTcpSocketProxy">
+            <runs />
+        </js-module>
+
+        <framework src="src/windows/FullLegitCode.TcpSocket.winmd" custom="true" />
+
+        <config-file target="package.appxmanifest" parent="/Package/Capabilities">
+            <Capability Name="privateNetworkClientServer" />
+        </config-file>
     </platform>
 </plugin>

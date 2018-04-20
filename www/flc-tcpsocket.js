@@ -21,7 +21,7 @@ FlcTcpSocket.openServer = function (port, successCallback, errorCallback) {
         if (successCallback) {
           successCallback(server);
         }
-      } else if (payload.event === 'client') {
+      } else if (payload.event === 'client' || payload.event === 'clientOpen') {
         const client = new FlcTcpClient(payload.id, payload.address);
         server._addClient(client);
         if (server.onClient) {
