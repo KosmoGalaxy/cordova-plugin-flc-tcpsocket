@@ -13,6 +13,44 @@ namespace FullLegitCode.TcpSocket
 
         static Dictionary<int, Server> Servers { get; } = new Dictionary<int, Server>();
 
+        public static IAsyncActionWithProgress<IClientReceivePayload> ClientListen(int id)
+        {
+            Client client = _GetClient(id);
+            if (client == null)
+            {
+                throw new Exception(string.Format("client (id)={0} not found", id));
+            }
+            return client.Listen();
+        }
+
+        public static IAsyncAction CloseClient(int id)
+        {
+            return Task.Run(() =>
+            {
+                Client client = _GetClient(id);
+                if (client == null)
+                {
+                    throw new Exception(string.Format("client (id)={0} not found", id));
+                }
+                client.Close("close requested");
+            })
+            .AsAsyncAction();
+        }
+
+        public static IAsyncAction CloseServer(int id)
+        {
+            return Task.Run(() =>
+            {
+                Server server = _GetServer(id);
+                if (server == null)
+                {
+                    throw new Exception(string.Format("server (id)={0} not found", id));
+                }
+                server.Close("close requested");
+            })
+            .AsAsyncAction();
+        }
+
         public static IAsyncOperation<Object> OpenServer(int port)
         {
             return Task.Run(() =>
@@ -23,16 +61,6 @@ namespace FullLegitCode.TcpSocket
                 return (Object)server;
             })
             .AsAsyncOperation();
-        }
-
-        public static IAsyncActionWithProgress<IClientReceivePayload> ClientListen(int id)
-        {
-            Client client = _GetClient(id);
-            if (client == null)
-            {
-                throw new Exception(string.Format("client (id)={0} not found", id));
-            }
-            return client.Listen();
         }
 
         static Client _GetClient(int id)
@@ -46,6 +74,11 @@ namespace FullLegitCode.TcpSocket
                 }
             }
             return null;
+        }
+
+        static Server _GetServer(int id)
+        {
+            return Servers.ContainsKey(id) ? Servers[id] : null;
         }
 
         internal static void Log(string message)

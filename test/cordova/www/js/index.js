@@ -28,7 +28,7 @@ let app = {
   // 'pause', 'resume', etc.
   onDeviceReady: function() {
     this.receivedEvent('deviceready');
-    setTimeout(test, 5000);
+    test();
   },
 
   // Update DOM on a Received Event
@@ -48,27 +48,19 @@ app.initialize();
 
 
 function test() {
-  /*let openServerButton = document.getElementById('button-open-server');
+  let openServerButton = document.getElementById('button-open-server');
   openServerButton.onclick = () => {
     cordova.plugins['FlcTcpSocket'].openServer(
       3070,
       server => {
-        console.log(server);
+        console.log('server open', server);
         onServer(server);
       },
       message => {
         console.error(message);
       }
     );
-  };*/
-  cordova.plugins['FlcTcpSocket'].openServer(
-    3070,
-    server => {
-      console.log('server open', server);
-      server.onClient = client => console.log('client open', client);
-    },
-    e => console.error(e)
-  );
+  };
 }
 
 function onServer(server) {
@@ -76,21 +68,26 @@ function onServer(server) {
   closeButton.onclick = () => {
     server.close();
   };
-  
   server.onClient = client => {
-    console.log(server, client);
+    console.log('client open', client);
     onClient(client);
   };
+  server.onClose = () => console.log('server closed');
 }
 
 function onClient(client) {
   client.receive(
     payload => {
-      const decoder = new TextDecoder('utf-8');
-      console.log(decoder.decode(new Uint8Array(payload.data)));
+      if (window.TextDecoder) {
+        const decoder = new TextDecoder('utf-8');
+        console.log(decoder.decode(new Uint8Array(payload.data)));
+      } else {
+        console.log('<<', payload.data);
+      }
     },
     message => {
       console.error(message);
     }
   );
+  client.onClose = () => console.log('client closed');
 }

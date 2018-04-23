@@ -43,7 +43,7 @@ namespace FullLegitCode.TcpSocket
                 IsClosed = true;
                 try
                 {
-                    TcpClient.Dispose();
+                    TcpClient.Client.Shutdown(SocketShutdown.Both);
                 }
                 catch (Exception e) { e.GetBaseException(); }
                 Socket.Log(string.Format("client closed (id)={0} (ip)={1} (reason)={2}", Id, Ip, reason));

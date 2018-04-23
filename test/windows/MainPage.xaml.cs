@@ -51,6 +51,7 @@ namespace FlcTcpSocketTest
                         client.Ip,
                         Encoding.UTF8.GetString(status.Data.ToArray())
                     ));
+                    Socket.CloseServer(server.Id);
                 };
             };
         }

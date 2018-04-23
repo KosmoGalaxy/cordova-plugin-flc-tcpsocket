@@ -85,9 +85,10 @@ FlcTcpServer.prototype._close = function() {
   if (!this.isClosed) {
     this.isClosed = true;
     const this_ = this;
-    this.clients.splice().forEach(function(client) {
-      this_._closeClient(client);
-    });
+    const clients = this.clients.splice(0, this.clients.length);
+    for (let i = 0; i < clients.length; i++) {
+      this_._closeClient(clients[i]);
+    }
     if (this.onClose) {
       this.onClose();
     }
@@ -132,10 +133,12 @@ FlcTcpClient.prototype.receive = function(dataCallback, errorCallback) {
   exec(
     function(payload) {
       if (dataCallback) {
-        payload = {
-          data: payload.slice(4),
-          orderNo: new DataView(payload).getInt32(0)
-        };
+        if (typeof payload.data === 'undefined' || typeof payload.orderNo === 'undefined') {
+          payload = {
+            data: payload.slice(4),
+            orderNo: new DataView(payload).getInt32(0)
+          };
+        }
         if (payload.orderNo === lastOrderNo + 1) {
           dataCallback(payload);
           lastOrderNo = payload.orderNo;
