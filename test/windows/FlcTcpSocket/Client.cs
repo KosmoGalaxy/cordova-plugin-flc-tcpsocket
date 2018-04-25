@@ -69,7 +69,7 @@ namespace FullLegitCode.TcpSocket
                             }
                             ClientReceivePayload payload = new ClientReceivePayload
                             {
-                                Data = numBytes == buffer.Length ? buffer : buffer.Take(numBytes).ToArray(),
+                                Data = buffer.Take(numBytes).ToArray(),
                                 OrderNo = nextOrderNo++
                             };
                             progress.Report(payload);
