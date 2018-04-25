@@ -1,5 +1,20 @@
 const component = FullLegitCode.TcpSocket.Socket;
 
+let debug = false;
+
+function clientListen(successCallback, errorCallback, args) {
+  try {
+    const id = args[0];
+    component.clientListen(id).then(
+      () => {},
+      e => errorCallback(e),
+      payload => {
+        successCallback({data: payload.data.buffer, orderNo: payload.orderNo}, {keepCallback: true});
+      }
+    );
+  } catch (e) { errorCallback(e) }
+}
+
 function closeClient(successCallback, errorCallback, args) {
   try {
     const id = args[0];
@@ -23,8 +38,11 @@ function openServer(successCallback, errorCallback, args) {
         successCallback({event: 'open', id: server.id}, {keepCallback: true});
         server.addEventListener('clientopen', client => {
           successCallback({event: 'clientOpen', id: client.id, address: client.ip}, {keepCallback: true});
-          client.addEventListener('closed', () => {
-            successCallback({event: 'clientClose', id: client.id}, {keepCallback: true});
+          client.addEventListener('closed', reason => {
+            if (debug) {
+              console.warn('[FlcTcpSocket.Client] closed (reason)=' + reason);
+            }
+            successCallback({event: 'clientClose', id: client.id, reason: reason}, {keepCallback: true});
           });
         });
         server.addEventListener('closed', () => successCallback({event: 'close'}));
@@ -34,17 +52,10 @@ function openServer(successCallback, errorCallback, args) {
   } catch (e) { errorCallback(e) }
 }
 
-function clientListen(successCallback, errorCallback, args) {
+function setDebug(successCallback, errorCallback, args) {
   try {
-    const id = args[0];
-    component.clientListen(id).then(
-      () => {},
-      e => errorCallback(e),
-      payload => {
-        const dataArray = Uint8Array.from(payload.data);
-        successCallback({data: dataArray.buffer, orderNo: payload.orderNo}, {keepCallback: true});
-      }
-    );
+    debug = args[0];
+    successCallback();
   } catch (e) { errorCallback(e) }
 }
 
@@ -54,12 +65,10 @@ module.exports = {
   closeClient: closeClient,
   closeServer: closeServer,
   openServer: openServer,
+  setDebug: setDebug,
 
   // backwards compatibility alias
-  clientReceive: clientListen,
-
-  // placeholder
-  setDebug: function(successCallback) { successCallback() }
+  clientReceive: clientListen
 };
 
 require('cordova/exec/proxy').add('FlcTcpSocket', module.exports);

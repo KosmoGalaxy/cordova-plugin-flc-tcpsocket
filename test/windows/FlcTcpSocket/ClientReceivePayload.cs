@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace FullLegitCode.TcpSocket
 {
     public interface IClientReceivePayload
     {
-        IList<byte> Data { get; }
+        Byte[] Data { get; }
         int OrderNo { get; }
     }
 
 
     class ClientReceivePayload : IClientReceivePayload
     {
-        public IList<byte> Data { get; set; }
+        public Byte[] Data { get; set; }
         public int OrderNo { get; set; }
     }
 }

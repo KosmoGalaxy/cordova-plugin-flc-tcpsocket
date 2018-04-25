@@ -28,7 +28,8 @@ namespace FlcTcpSocketTest
         public MainPage()
         {
             this.InitializeComponent();
-            Test();
+            //Test();
+            ConnectClient();
         }
 
         async void Test()
@@ -51,9 +52,16 @@ namespace FlcTcpSocketTest
                         client.Ip,
                         Encoding.UTF8.GetString(status.Data.ToArray())
                     ));
-                    Socket.CloseServer(server.Id);
                 };
             };
+            ConnectClient();
+        }
+
+        async void ConnectClient()
+        {
+            System.Net.Sockets.TcpClient client = new System.Net.Sockets.TcpClient();
+            await client.ConnectAsync("192.168.1.142", 3070);
+            Debug.WriteLine("connected");
         }
     }
 }

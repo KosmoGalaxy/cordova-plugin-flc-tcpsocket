@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -70,7 +69,7 @@ namespace FullLegitCode.TcpSocket
                             }
                             ClientReceivePayload payload = new ClientReceivePayload
                             {
-                                Data = new List<byte>(buffer.Take(numBytes)),
+                                Data = numBytes == buffer.Length ? buffer : buffer.Take(numBytes).ToArray(),
                                 OrderNo = nextOrderNo++
                             };
                             progress.Report(payload);

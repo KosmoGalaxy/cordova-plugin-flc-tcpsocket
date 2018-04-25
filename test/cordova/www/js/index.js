@@ -48,6 +48,7 @@ app.initialize();
 
 
 function test() {
+  cordova.plugins['FlcTcpSocket'].setDebug(true);
   let openServerButton = document.getElementById('button-open-server');
   openServerButton.onclick = () => {
     cordova.plugins['FlcTcpSocket'].openServer(
@@ -80,9 +81,9 @@ function onClient(client) {
     payload => {
       if (window.TextDecoder) {
         const decoder = new TextDecoder('utf-8');
-        console.log(decoder.decode(new Uint8Array(payload.data)));
+        console.log('--', decoder.decode(new Uint8Array(payload.data)));
       } else {
-        console.log('<<', payload.data);
+        console.log('--', payload.data);
       }
     },
     message => {

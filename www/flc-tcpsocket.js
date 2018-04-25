@@ -133,11 +133,14 @@ FlcTcpClient.prototype.receive = function(dataCallback, errorCallback) {
   exec(
     function(payload) {
       if (dataCallback) {
-        if (typeof payload.data === 'undefined' || typeof payload.orderNo === 'undefined') {
+        if (payload instanceof ArrayBuffer) {
           payload = {
             data: payload.slice(4),
             orderNo: new DataView(payload).getInt32(0)
           };
+        } else if (typeof payload.data === 'undefined' || typeof payload.orderNo === 'undefined') {
+          console.error('[FlcTcpSocket.Client.receive] invalid payload:', payload);
+          return;
         }
         if (payload.orderNo === lastOrderNo + 1) {
           dataCallback(payload);
