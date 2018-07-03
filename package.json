@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-flc-tcpsocket",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Cordova FullLegitCode TCP Socket Plugin",
   "cordova": {
     "id": "cordova-plugin-flc-tcpsocket",

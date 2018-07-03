@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="cordova-plugin-flc-tcpsocket" version="1.2.0">
+        id="cordova-plugin-flc-tcpsocket" version="1.2.1">
     <name>cordova-plugin-flc-tcpsocket</name>
     <description>Cordova FullLegitCode TCP Socket Plugin</description>
     <license>Apache 2.0</license>
@@ -53,6 +53,7 @@
         <framework src="src/windows/FullLegitCode.TcpSocket.winmd" custom="true" />
 
         <config-file target="package.appxmanifest" parent="/Package/Capabilities">
+            <Capability Name="internetClientServer" />
             <Capability Name="privateNetworkClientServer" />
         </config-file>
     </platform>
