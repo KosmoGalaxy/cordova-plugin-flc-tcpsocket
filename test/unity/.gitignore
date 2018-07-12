@@ -1,6 +1,7 @@
 /.vs/
 /build/
 /Library/
+/obj/
 /Temp/
 /unity.csproj
 /unity.sln

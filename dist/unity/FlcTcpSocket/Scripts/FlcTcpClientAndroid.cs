@@ -21,10 +21,17 @@ namespace FullLegitCode.TcpSocket
             {
                 try
                 {
-                    AndroidJNI.AttachCurrentThread();
-                    _javaObject.Call("openSync", ip, port);
-                    AndroidJNI.DetachCurrentThread();
-                    tcs.SetResult(true);
+                    if (_javaObject != null)
+                    {
+                        AndroidJNI.AttachCurrentThread();
+                        _javaObject.Call("openSync", ip, port);
+                        AndroidJNI.DetachCurrentThread();
+                        tcs.SetResult(true);
+                    }
+                    else
+                    {
+                        throw new Exception("client already closed");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -54,10 +61,17 @@ namespace FullLegitCode.TcpSocket
             {
                 try
                 {
-                    AndroidJNI.AttachCurrentThread();
-                    _javaObject.Call("sendSync", data);
-                    AndroidJNI.DetachCurrentThread();
-                    tcs.SetResult(true);
+                    if (_javaObject != null)
+                    {
+                        AndroidJNI.AttachCurrentThread();
+                        _javaObject.Call("sendSync", data);
+                        AndroidJNI.DetachCurrentThread();
+                        tcs.SetResult(true);
+                    }
+                    else
+                    {
+                        throw new Exception("client already closed");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -81,19 +95,22 @@ namespace FullLegitCode.TcpSocket
         {
             if (!isClosed)
             {
-                _isClosed = true;
-                try
+                lock (_javaObject)
                 {
-                    _javaObject.Call("close");
+                    _isClosed = true;
+                    try
+                    {
+                        _javaObject.Call("close");
+                    }
+                    catch (Exception e) { e.ToString(); }
+                    try
+                    {
+                        _javaObject.Dispose();
+                    }
+                    catch (Exception e) { e.ToString(); }
+                    _javaObject = null;
+                    Debug.Log("[FlcTcpClient] closed");
                 }
-                catch (Exception e) { e.ToString(); }
-                try
-                {
-                    _javaObject.Dispose();
-                }
-                catch (Exception e) { e.ToString(); }
-                _javaObject = null;
-                Debug.Log("[FlcTcpClient] closed");
             }
         }
 
