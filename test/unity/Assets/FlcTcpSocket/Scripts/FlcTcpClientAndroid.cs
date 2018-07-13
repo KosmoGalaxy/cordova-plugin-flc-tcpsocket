@@ -100,14 +100,17 @@ namespace FullLegitCode.TcpSocket
                     _isClosed = true;
                     try
                     {
-                        _javaObject.Call("close");
+                        if (!_javaObject.Call<bool>("isClosed"))
+                        {
+                            _javaObject.Call("close");
+                        }
                     }
-                    catch (Exception e) { e.ToString(); }
+                    catch (Exception e) { Debug.LogError("[FlcTcpClient] jni close error: " + e); }
                     try
                     {
                         _javaObject.Dispose();
                     }
-                    catch (Exception e) { e.ToString(); }
+                    catch (Exception e) { Debug.LogError("[FlcTcpClient] dispose error: " + e); }
                     _javaObject = null;
                     Debug.Log("[FlcTcpClient] closed");
                 }
