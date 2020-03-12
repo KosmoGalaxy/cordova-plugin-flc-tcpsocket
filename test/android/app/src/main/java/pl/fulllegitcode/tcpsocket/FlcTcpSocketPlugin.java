@@ -19,6 +19,7 @@ public class FlcTcpSocketPlugin extends CordovaPlugin {
   private static final String ACTION_SET_DEBUG = "setDebug";
   private static final String ACTION_OPEN_SERVER = "openServer";
   private static final String ACTION_CLOSE_SERVER = "closeServer";
+  private static final String ACTION_CLIENT_SEND = "clientSend";
   private static final String ACTION_CLIENT_RECEIVE = "clientReceive";
   private static final String ACTION_CLOSE_CLIENT = "closeClient";
 
@@ -39,6 +40,10 @@ public class FlcTcpSocketPlugin extends CordovaPlugin {
     }
     if (action.equals(ACTION_CLOSE_SERVER)) {
       _closeServer(args.getInt(0), callbackContext);
+      return true;
+    }
+    if (action.equals(ACTION_CLIENT_SEND)) {
+      _clientSend(args.getInt(0), args.getArrayBuffer(1), callbackContext);
       return true;
     }
     if (action.equals(ACTION_CLIENT_RECEIVE)) {
@@ -166,6 +171,25 @@ public class FlcTcpSocketPlugin extends CordovaPlugin {
           }
         } else {
           callbackContext.error("server not found");
+        }
+      }
+    });
+  }
+
+  private void _clientSend(final int id, final byte[] data, final CallbackContext callbackContext) {
+    cordova.getThreadPool().execute(new Runnable() {
+      @Override
+      public void run() {
+        FlcTcpClient client = getClient(id);
+        if (client != null) {
+          try {
+            client.sendSync(data);
+            callbackContext.success();
+          } catch (Exception e) {
+            callbackContext.error(e.getMessage());
+          }
+        } else {
+          callbackContext.error("client not found");
         }
       }
     });

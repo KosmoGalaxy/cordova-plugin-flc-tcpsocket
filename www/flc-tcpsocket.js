@@ -121,6 +121,23 @@ function FlcTcpClient(id, address) {
   this._onClose = null;
 }
 
+FlcTcpClient.prototype.send = function(data, successCallback, errorCallback) {
+  if (this.isClosed) {
+    if (errorCallback) {
+      errorCallback('client closed');
+    }
+    return;
+  }
+
+  exec(
+    successCallback,
+    errorCallback,
+    'FlcTcpSocket',
+    'clientSend',
+    [this.id, data]
+  );
+};
+
 FlcTcpClient.prototype.receive = function(dataCallback, errorCallback) {
   if (this.isClosed) {
     if (errorCallback) {
