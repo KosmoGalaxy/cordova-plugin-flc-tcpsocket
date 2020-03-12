@@ -2,6 +2,7 @@ const cmd = require('node-cmd');
 const copyDirectory = require('./copy-directory');
 
 copyDirectory('./android/app/src/main/java/pl/fulllegitcode/tcpsocket', '../src/android/pl/fulllegitcode/tcpsocket');
+copyDirectory('./android/flc-tcpsocket/src/main/java/pl/fulllegitcode/tcpsocket', '../src/android/pl/fulllegitcode/tcpsocket');
 cmd.get(
   'cd cordova && cordova plugin remove cordova-plugin-flc-tcpsocket',
   (err, data, stderr) => {
