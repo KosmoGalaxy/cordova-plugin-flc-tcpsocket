@@ -50,15 +50,13 @@ public class FlcTcpSocketClient {
   public void receive(ReceiveCallback receiveCallback) {
     threadPool().execute(() -> {
       try {
-        while (true) {
+        while (isConnected && inputStream != null) {
           if (inputStream.available() > 0) {
             byte[] buffer = new byte[inputStream.available()];
             int bytesRead = inputStream.read(buffer);
-
             if (bytesRead == 0) {
               receiveCallback.onError("Bytes read is 0");
             }
-
             if (receiveCallback != null) {
               receiveCallback.onDataReceived(buffer);
             }
