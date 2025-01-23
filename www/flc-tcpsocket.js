@@ -48,6 +48,67 @@ FlcTcpSocket.openServer = function (port, successCallback, errorCallback) {
   );
 };
 
+FlcTcpSocket.openSocket = function(ip, port, successCallback, errorCallback) {
+  let socket;
+  exec(
+    function () {
+      socket = new FlcTcpSocketClient(ip, port);
+      if (successCallback) {
+        successCallback(socket);
+      }
+    },
+    function (message) {
+      if (errorCallback) {
+        errorCallback(message);
+      }
+    },
+    'FlcTcpSocket',
+    'openSocket',
+    [ip, port]
+  );
+}
+
+function FlcTcpSocketClient(ip, port) {
+  this.ip = ip;
+  this.port = port;
+  this.onError = null;
+  this.onClose = null;
+}
+
+FlcTcpSocketClient.prototype.receive = function(callback) {
+  exec(
+    function(buffer) {
+      const bytes = new Uint8Array(buffer);
+      callback(bytes);
+    },
+    function() {},
+    'FlcTcpSocket',
+    'socketReceive',
+    []
+  );
+};
+
+FlcTcpSocketClient.prototype.send = function(bytes) {
+  const buffer = btoa(String.fromCharCode.apply(null, bytes));
+  exec(
+    function() {},
+    function() {},
+    'FlcTcpSocket',
+    'socketSend',
+    [buffer]
+  );
+};
+
+FlcTcpSocketClient.prototype.close = function() {
+  exec(
+    function() {},
+    function() {},
+    'FlcTcpSocket',
+    'closeSocket',
+    []
+  );
+};
+
 function FlcTcpServer(id, port) {
   this.id = id;
   this.port = port;
