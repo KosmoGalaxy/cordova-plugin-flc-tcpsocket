@@ -27,13 +27,13 @@ public class FlcTcpSocketPlugin extends CordovaPlugin {
   private static final String ACTION_OPEN_SOCKET = "openSocket";
   private static final String ACTION_SOCKET_RECEIVE = "socketReceive";
   private static final String ACTION_SOCKET_SEND = "socketSend";
-  private static final String ACTION_CLOSE_SOCKET = "closeSocket";
+  private static final String ACTION_SOCKET_CLOSE = "socketClose";
 
 
   private Servers _servers = new Servers();
   public Servers servers() { return _servers; }
 
-  public FlcTcpSocketClient socket;
+  private ArrayList<FlcTcpSocketClient> sockets = new ArrayList<FlcTcpSocketClient>();
 
 
   @Override
@@ -68,16 +68,15 @@ public class FlcTcpSocketPlugin extends CordovaPlugin {
       return true;
     }
     if (action.equals(ACTION_SOCKET_RECEIVE)) {
-      socketReceive(callbackContext);
+      socketReceive(args.getInt(0), callbackContext);
       return true;
     }
     if (action.equals(ACTION_SOCKET_SEND)) {
-      byte[] message = args.getArrayBuffer(0);
-      socketSend(message, callbackContext);
+      socketSend(args.getInt(0), args.getArrayBuffer(1), callbackContext);
       return true;
     }
-    if (action.equals(ACTION_CLOSE_SOCKET)) {
-      closeSocket(callbackContext);
+    if (action.equals(ACTION_SOCKET_CLOSE)) {
+      closeSocket(args.getInt(0), callbackContext);
       return true;
     }
     return false;
@@ -88,50 +87,84 @@ public class FlcTcpSocketPlugin extends CordovaPlugin {
     cordova.getThreadPool().execute(new Runnable() {
       @Override
       public void run() {
-        socket = new FlcTcpSocketClient(cordova.getThreadPool());
-        socket.connect(ip, port);
-        callbackContext.success("TcpSocket connected to " + ip + ":" + port);
+      try {
+        FlcTcpSocketClient socket = new FlcTcpSocketClient(cordova.getThreadPool());
+        socket.connect(ip, port, new FlcTcpSocketClient.OpenCallback() {
+          @Override
+          public void onClose() {
+            try {
+              sockets.remove(socket);
+              JSONObject payload = new JSONObject();
+              payload.put("event", "close");
+              callbackContext.success(payload);
+            } catch (JSONException e) {
+              FlcTcpSocket.logError(String.format(Locale.ENGLISH, "json error. message=%s", e.getMessage()));
+            }
+          }
+        });
+        sockets.add(socket);
+        JSONObject payload = new JSONObject();
+        payload.put("event", "open");
+        payload.put("id", socket.id());
+        PluginResult result = new PluginResult(PluginResult.Status.OK, payload);
+        result.setKeepCallback(true);
+        callbackContext.sendPluginResult(result);
+      } catch (Exception e) {
+        callbackContext.error(e.getMessage());
+      }
       }
     });
   }
 
-  public void socketReceive(CallbackContext callbackContext) {
+  public void socketReceive(final int id, CallbackContext callbackContext) {
+    FlcTcpSocketClient socket = getSocket(id);
+    if (socket == null) {
+      callbackContext.error("socket not found");
+      return;
+    }
+    socket.receive(new FlcTcpSocketClient.ReceiveCallback() {
+      @Override
+      public void onDataReceived(byte[] bytes) {
+        PluginResult result = new PluginResult(PluginResult.Status.OK, bytes);
+        result.setKeepCallback(true);
+        callbackContext.sendPluginResult(result);
+      }
+    });
+  }
+
+  public void socketSend(final int id, byte[] bytes, CallbackContext callbackContext) {
     cordova.getThreadPool().execute(new Runnable() {
       @Override
       public void run() {
-        socket.receive(new FlcTcpSocketClient.ReceiveCallback() {
-          @Override
-          public void onDataReceived(byte[] bytes) {
-            PluginResult result = new PluginResult(PluginResult.Status.OK, bytes);
-            result.setKeepCallback(true);
-            callbackContext.sendPluginResult(result);
-          }
-
-          @Override
-          public void onError(String error) {
-            callbackContext.error(error);
-          }
-        });
+        FlcTcpSocketClient socket = getSocket(id);
+        if (socket == null) {
+          callbackContext.error("socket not found");
+          return;
+        }
+        socket.send(bytes);
+        callbackContext.success(bytes);
       }
     });
   }
 
-  public void socketSend(byte[] bytes, CallbackContext callbackContext) {
-    if (socket != null) {
-      socket.send(bytes);
-      callbackContext.success(bytes);
-    } else {
-      callbackContext.error("Socket not connected");
+  public void closeSocket(final int id, CallbackContext callbackContext) {
+    FlcTcpSocketClient socket = getSocket(id);
+    if (socket == null) {
+      callbackContext.error("socket not found");
+      return;
     }
+    socket.close();
+    callbackContext.success();
   }
 
-  public void closeSocket(CallbackContext callbackContext) {
-    if (socket != null) {
-      socket.close();
-      callbackContext.success("Socket disconnected");
-    } else {
-      callbackContext.error("Socket not connected");
+  public FlcTcpSocketClient getSocket(int id) {
+    for (int i = 0; i < sockets.size(); i++) {
+      FlcTcpSocketClient socket = sockets.get(i);
+      if (socket.id() == id) {
+        return socket;
+      }
     }
+    return null;
   }
 
   public FlcTcpServer getServer(int id) {

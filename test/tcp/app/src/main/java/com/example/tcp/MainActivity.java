@@ -9,6 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 
 import pl.fulllegitcode.tcpsocket.FlcTcpSocketClient;
@@ -32,7 +33,21 @@ public class MainActivity extends AppCompatActivity {
 
   private void testSocket() {
     socket = new FlcTcpSocketClient(Executors.newCachedThreadPool());
-    socket.connect("172.20.10.8", 36900);
+    try {
+      socket.connect("172.20.10.8", 36900, new FlcTcpSocketClient.OpenCallback() {
+        @Override
+        public void onClose() {
+
+        }
+
+        @Override
+        public void onError(String message) {
+
+        }
+      });
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     socket.receive(new FlcTcpSocketClient.ReceiveCallback() {
       @Override
       public void onDataReceived(byte[] data) {

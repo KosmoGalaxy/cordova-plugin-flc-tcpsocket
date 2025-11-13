@@ -51,16 +51,19 @@ FlcTcpSocket.openServer = function (port, successCallback, errorCallback) {
 FlcTcpSocket.openSocket = function(ip, port, successCallback, errorCallback) {
   let socket;
   exec(
-    function () {
-      socket = new FlcTcpSocketClient(ip, port);
-      if (successCallback) {
-        successCallback(socket);
+    function (payload) {
+      if (payload.event === 'open') {
+        socket = new FlcTcpSocketClient(payload.id, ip, port);
+        if (successCallback)
+          successCallback(socket);
+      } else if (payload.event === 'close') {
+        if (socket.onClose)
+          socket.onClose();
       }
     },
     function (message) {
-      if (errorCallback) {
+      if (errorCallback)
         errorCallback(message);
-      }
     },
     'FlcTcpSocket',
     'openSocket',
@@ -68,10 +71,10 @@ FlcTcpSocket.openSocket = function(ip, port, successCallback, errorCallback) {
   );
 }
 
-function FlcTcpSocketClient(ip, port) {
+function FlcTcpSocketClient(id, ip, port) {
+  this.id = id;
   this.ip = ip;
   this.port = port;
-  this.onError = null;
   this.onClose = null;
 }
 
@@ -84,7 +87,7 @@ FlcTcpSocketClient.prototype.receive = function(callback) {
     function() {},
     'FlcTcpSocket',
     'socketReceive',
-    []
+    [this.id]
   );
 };
 
@@ -95,7 +98,7 @@ FlcTcpSocketClient.prototype.send = function(bytes) {
     function() {},
     'FlcTcpSocket',
     'socketSend',
-    [buffer]
+    [this.id, buffer]
   );
 };
 
@@ -104,8 +107,8 @@ FlcTcpSocketClient.prototype.close = function() {
     function() {},
     function() {},
     'FlcTcpSocket',
-    'closeSocket',
-    []
+    'socketClose',
+    [this.id]
   );
 };
 

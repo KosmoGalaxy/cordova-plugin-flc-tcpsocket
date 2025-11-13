@@ -12,89 +12,88 @@ import java.util.concurrent.ExecutorService;
 
 
 public class FlcTcpSocketClient {
-  private String TAG = "FlcTcpSocketClient";
-
-  private Socket socket;
-  private OutputStream outputStream;
-  private InputStream inputStream;
-  private boolean isConnected = false;
-
-  private ExecutorService _threadPool;
-  public ExecutorService threadPool() {
-    return _threadPool;
+  public interface OpenCallback {
+    void onClose();
   }
-
 
   public interface ReceiveCallback {
     void onDataReceived(byte[] data);
-    void onError(String error);
   }
+
+  private static int _nextId = 1;
+
+  private final String TAG = "FlcTcpSocketClient";
+
+  private final int _id = _nextId++;
+  private Socket socket;
+  private OutputStream outputStream;
+  private InputStream inputStream;
+  private ExecutorService threadPool;
+  private OpenCallback openCallback;
+
+  public int id() { return _id; }
 
   public FlcTcpSocketClient(ExecutorService threadPool) {
-    this._threadPool = threadPool;
+    this.threadPool = threadPool;
   }
 
-  public void connect(String ip, int port) {
-    threadPool().execute(() -> {
-      try {
-        socket = new Socket(ip, port);
-        inputStream = new BufferedInputStream(socket.getInputStream());
-        outputStream = new BufferedOutputStream(socket.getOutputStream());
-        isConnected = true;
-        Log.d(TAG, "Connected to: " + ip + ":" + port);
-      } catch (IOException e) {
-        Log.d(TAG, "connect exception: " + e);
-      }
-    });
+  public void connect(String ip, int port, OpenCallback callback) throws IOException {
+    try {
+      openCallback = callback;
+      socket = new Socket(ip, port);
+      inputStream = new BufferedInputStream(socket.getInputStream());
+      outputStream = new BufferedOutputStream(socket.getOutputStream());
+      Log.d(TAG, "connected: " + ip + ":" + port);
+      threadPool.execute(() -> {
+        while (!socket.isClosed()) {
+          try {
+            Thread.sleep(10);
+          } catch (InterruptedException ignored) {
+          }
+        }
+        openCallback.onClose();
+      });
+    } catch (IOException e) {
+      Log.d(TAG, "connect exception: " + e);
+      throw e;
+    }
   }
 
   public void receive(ReceiveCallback receiveCallback) {
-    threadPool().execute(() -> {
-      try {
-        while (true) {
-          if (inputStream.available() > 0) {
-            byte[] buffer = new byte[inputStream.available()];
-            int bytesRead = inputStream.read(buffer);
-            if (bytesRead == 0) {
-              receiveCallback.onError("Bytes read is 0");
-            }
-            if (receiveCallback != null) {
-              receiveCallback.onDataReceived(buffer);
-            }
+    threadPool.execute(() -> {
+      while (!socket.isClosed()) {
+        try {
+          Thread.sleep(10);
+          if (inputStream.available() == 0)
+            continue;
+          byte[] buffer = new byte[inputStream.available()];
+          int bytesRead = inputStream.read(buffer);
+          if (bytesRead == 0) {
+            close();
+            return;
           }
-        }
-      } catch (IOException e) {
-        Log.e(TAG, "[Client] Error while reading from socket: " + e);
-        if (receiveCallback != null) {
-          receiveCallback.onError("Receive exception: " + e);
+          receiveCallback.onDataReceived(buffer);
+        } catch (Exception e) {
+          close();
+          return;
         }
       }
     });
   }
 
   public void send(byte[] data) {
-    threadPool().execute(() -> {
-      try {
-        if (isConnected && outputStream != null) {
-          outputStream.write(data);
-          outputStream.flush();
-        } else {
-          Log.d(TAG, "Socket is not connected");
-        }
-      } catch (IOException e) {
-        Log.d(TAG, "send exception: " + e);
-      }
-    });
+    try {
+      outputStream.write(data);
+      outputStream.flush();
+    } catch (IOException e) {
+      Log.d(TAG, "send exception: " + e);
+      close();
+    }
   }
 
   public void close() {
     try {
-      if (isConnected) {
-        isConnected = false;
-        if (socket != null) {
-          socket.close();
-        }
-      }
+      socket.close();
     } catch (IOException e) {
       Log.d(TAG, "close exception: " + e);
     }
